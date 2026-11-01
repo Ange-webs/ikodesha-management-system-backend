@@ -27,7 +27,7 @@ public class PropertyType {
     public void setId(UUID id) { this.id = id; }
 
     public String getName() { return name; }
-    public void setName(String name) { }
+    public void setName(String name) { this.name=name;}
 
     public List<RentalAgent> getRentalAgents() { return rentalAgents; }
     public void setRentalAgents(List<RentalAgent> rentalAgents) { this.rentalAgents = rentalAgents; }

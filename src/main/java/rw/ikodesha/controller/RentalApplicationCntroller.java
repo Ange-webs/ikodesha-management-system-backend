@@ -1,5 +1,6 @@
 package rw.ikodesha.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import rw.ikodesha.domain.ApplicationStatus;
 import rw.ikodesha.domain.RentalApplication;
 import rw.ikodesha.service.RentalApplicationService;
 
@@ -29,6 +30,18 @@ public class RentalApplicationCntroller {
     public ResponseEntity<List<RentalApplication>> getAllRentalApplication() {
         return new ResponseEntity<>(rentalApplicationService.getAllRentalApplications(), HttpStatus.OK);
 
+    }
+
+    @GetMapping("/by-status")
+    public ResponseEntity<List<RentalApplication>> getByStatus(@RequestParam ApplicationStatus status) {
+        return new ResponseEntity<>(rentalApplicationService.getRentalApplicationsByStatus(status), HttpStatus.OK);
+    }
+
+    @GetMapping("/between")
+    public ResponseEntity<List<RentalApplication>> getBetween(@RequestParam String start, @RequestParam String end) {
+        LocalDate startDate = LocalDate.parse(start);
+        LocalDate endDate = LocalDate.parse(end);
+        return new ResponseEntity<>(rentalApplicationService.getRentalApplicationsBetween(startDate, endDate), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

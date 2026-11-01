@@ -1,5 +1,6 @@
 package rw.ikodesha.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -10,5 +11,5 @@ import rw.ikodesha.domain.Tenant;
 
 @Repository
 public interface TenantRepository extends JpaRepository<Tenant, UUID> {
-    
+ List<Tenant> findByLastNameIgnoreCaseOrderByFirstNameAsc(String lastName);  
 }

@@ -29,6 +29,11 @@ public class TenantController {
     public ResponseEntity<List<Tenant>> getAllTenants() {
         return new ResponseEntity<>(tenantService.getAllTenants(), HttpStatus.OK);
     }
+
+    @GetMapping("/by-last-name")
+    public ResponseEntity<List<Tenant>> getTenantsByLastName(@RequestParam String lastName) {
+        return new ResponseEntity<>(tenantService.getTenantsByLastName(lastName), HttpStatus.OK);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> getTenantById(@PathVariable UUID id) {
         Optional<Tenant> tenant = tenantService.getTenantById(id);

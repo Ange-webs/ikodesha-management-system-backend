@@ -1,5 +1,6 @@
 package rw.ikodesha.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -8,6 +9,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import rw.ikodesha.domain.ApplicationStatus;
 import rw.ikodesha.domain.RentalApplication;
 import rw.ikodesha.repository.RentalApplicationRepository;
 
@@ -56,5 +58,13 @@ public class RentalApplicationService {
         }
         rentalApplicationRepo.deleteById(id);
         return "Rental application delete successfully";
+    }
+
+    public List<RentalApplication> getRentalApplicationsByStatus(ApplicationStatus status) {
+        return rentalApplicationRepo.findByStatusOrderByMoveInDateAsc(status);
+    }
+
+    public List<RentalApplication> getRentalApplicationsBetween(LocalDate start, LocalDate end) {
+        return rentalApplicationRepo.findByMoveInDateBetweenOrderByMoveInDateAsc(start, end);
     }
 }
