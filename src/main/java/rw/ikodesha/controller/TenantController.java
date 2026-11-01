@@ -34,6 +34,17 @@ public class TenantController {
     public ResponseEntity<List<Tenant>> getTenantsByLastName(@RequestParam String lastName) {
         return new ResponseEntity<>(tenantService.getTenantsByLastName(lastName), HttpStatus.OK);
     }
+
+    @GetMapping ("/of-rental-agent/{rentalAgentId}")
+    public ResponseEntity<?> getTenantsOfRentalAgent(@PathVariable UUID rentalAgentId) {
+        Optional<List<Tenant>> tenants = tenantService.getTenantsOfRentalAgent(rentalAgentId);
+        if (tenants.isPresent()) {
+            return new ResponseEntity<>(tenants.get(), HttpStatus.OK);
+
+        }else {
+            return new ResponseEntity<>("The rental agent with that id does not exist", HttpStatus.NOT_FOUND);
+        }
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> getTenantById(@PathVariable UUID id) {
         Optional<Tenant> tenant = tenantService.getTenantById(id);

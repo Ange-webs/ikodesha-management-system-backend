@@ -51,5 +51,8 @@ public class RentalAgentService {
         rentalAgentRepo.deleteById(id);
         return "Rental agent deleted successfully";
     }
+    public List<RentalAgent> getRentalAgentsByPropertyType(String name) {
+        return rentalAgentRepo.searchByPropertyType(name);
+    }
     
 }

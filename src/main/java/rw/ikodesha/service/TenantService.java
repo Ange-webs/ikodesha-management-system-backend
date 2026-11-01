@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 
 import rw.ikodesha.domain.Tenant;
+import rw.ikodesha.repository.RentalAgentRepository;
+import rw.ikodesha.repository.RentalApplicationRepository;
 import rw.ikodesha.repository.TenantRepository;
 
 @Service
@@ -17,6 +19,12 @@ public class TenantService {
     
     @Autowired 
     private TenantRepository tenantRepo;
+
+    @Autowired 
+    private RentalAgentRepository rentalAgentRepo;
+
+    @Autowired
+    private RentalApplicationRepository rentalApplicationRepo;
 
     public String saveTenant(Tenant tenant) {
         tenantRepo.save(tenant);
@@ -54,5 +62,13 @@ public class TenantService {
         public List<Tenant> getTenantsByLastName(String lastName) {
             return tenantRepo.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
         
+    }
+
+    public Optional<List<Tenant>> getTenantsOfRentalAgent(UUID rentalAgentId) {
+        if (!rentalAgentRepo.existsById(rentalAgentId)) {
+            return Optional.empty();
+
+        }
+        return Optional.of(rentalApplicationRepo.findTenantsOfRentalAgent(rentalAgentId));
     }
 }

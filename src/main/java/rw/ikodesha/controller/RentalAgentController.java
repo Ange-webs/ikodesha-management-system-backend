@@ -1,6 +1,7 @@
 package rw.ikodesha.controller;
 
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +27,16 @@ public class RentalAgentController {
     public ResponseEntity<String> saveRentalAgent(@RequestBody RentalAgent rentalAgent) {
         String msg = rentalAgentService.saveRentalAgent(rentalAgent);
         return new ResponseEntity<>(msg, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<RentalAgent>> getAllRentalAgents() {
+        return new ResponseEntity<>(rentalAgentService.getAllRentalAgents(), HttpStatus.OK);
+    }
+
+    @GetMapping ("/by-proper-type")
+    public ResponseEntity<List<RentalAgent>> getByPropertyType(@RequestParam String name){
+        return new ResponseEntity<>(rentalAgentService.getRentalAgentsByPropertyType(name), HttpStatus.OK);
     }
     
     @GetMapping("/{id}")

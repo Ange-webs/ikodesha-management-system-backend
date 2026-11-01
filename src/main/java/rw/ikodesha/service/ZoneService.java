@@ -49,4 +49,8 @@ public class ZoneService {
         zoneRepo.deleteById(id);
         return "Zone deleted succesfully";
     }
+
+    public List<Zone> getFreeZones() {
+        return zoneRepo.findFreeZones();
+    }
 }

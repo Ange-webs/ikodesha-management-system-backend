@@ -32,6 +32,10 @@ public class ZoneController {
 
     }
 
+    @GetMapping ("/free")
+    public ResponseEntity<List<Zone>> getFreeZones() {
+        return new  ResponseEntity<>(zoneService.getFreeZones(),HttpStatus.OK);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> getZoneById(@PathVariable UUID id) {
         Optional<Zone> zone = zoneService.getZoneById(id);

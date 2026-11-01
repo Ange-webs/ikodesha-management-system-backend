@@ -52,4 +52,8 @@ public Optional<PropertyType> getPropertyTypeById(UUID id) {
         propertyTypeRepo.deleteById(id);
         return "Property type deleted successfully";
     }
+
+    public List<PropertyType> getUnusedPropertyTypes() {
+        return propertyTypeRepo.findUnusedPropertyTypes();
+    }
 }

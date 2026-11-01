@@ -31,6 +31,10 @@ import rw.ikodesha.service.PropertTypeServervice;
             return new ResponseEntity<>(propertyTypesService.getAllPropertyTypes(), HttpStatus.OK)
 
         }
+
+        @GetMapping("/unused")
+        public ResponseEntity<List<PropertyType>> getUnusedPropertyTypes() {
+            return new ResponseEntity<>(propertyTypeService.getUnusedPropertyType(), HttpStatus.OK);
         
         @GetMapping("/{id}")
         public ResponseEntity<?> getPropertyTypeById(@PathVariable UUID id) {
