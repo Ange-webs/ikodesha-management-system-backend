@@ -24,7 +24,15 @@ public class RentalApplicationCntroller {
     @PostMapping("/save")
     public ResponseEntity<String> saveRentalApplication(@RequestBody RentalApplication rentalApplication) {
         String msg = rentalApplicationService.saveRentalApplication(rentalApplication);
-        return new ResponseEntity<>(msg, HttpStatus.CREATED);
+        if (msg.equals("Rental application saved successfully")) {
+            return new ResponseEntity<>(msg, HttpStatus.CREATED);
+
+        }else if (msg.equals("Rental application date cannot be in the past")) {
+
+        return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+        } else{
+            return new ResponseEntity<>(msg, HttpStatus.CONFLICT);
+        }
     }
     @GetMapping("/all")
     public ResponseEntity<List<RentalApplication>> getAllRentalApplication() {
@@ -53,6 +61,21 @@ if (rentalApplication.isPresent()) {
     return new ResponseEntity<>("The rental application with that id does not exist", HttpStatus.NOT_FOUND);
    }
  }
+
+ @PatchMapping("/{id}/status")
+public ResponseEntity<String> changeStatus(@PathVariable UUID id, @RequestParam ApplicationStatus status) {
+    String msg = rentalApplicationService.changeStatus(id, status);
+if (msg.equals("Rental application status updated successfully")) {
+    return new ResponseEntity<>(msg, HttpStatus.OK);
+}else if (msg.equals("The rental application with that id does not exist")) {
+    return new ResponseEntity<>(msg, HttpStatus.NOT_FOUND);
+
+
+    } else {
+        return new ResponseEntity<>(msg,HttpStatus.BAD_REQUEST);
+    }
+
+}
 
  @PutMapping("/update/{id}")
  public ResponseEntity<String> updateRentalApplication(@PathVariable UUID id, @RequestBody RentalApplication rentalApplication) {

@@ -20,10 +20,24 @@ public class RentalApplicationService {
 
     @Autowired 
     private RentalApplicationRepository rentalApplicationRepo;
-    public String saveRentalApplication(RentalApplication rentalApplication) {
-        rentalApplicationRepo.save(rentalApplication);
-        return "Rental application saved successfully";
+    
 
+    public String saveRentalApplication(RentalApplication rentalApplication) {
+        if (rentalApplication.getMoveInDate().isBefore(LocalDate.now())) {
+            return "Rental application date cannot be in the past";
+
+        }
+        boolean booked = rentalApplicationRepo.existsByRentalAgentIdAndMoveInDateAndStatusNot(
+            rentalApplication.getRentalAgent().getId(),
+            rentalApplication.getMoveInDate(),
+            ApplicationStatus.DECLINED);
+        if (booked) {
+            return "Rental agent already has a move-in on that date";
+
+        }
+    rentalApplication.setStatus(ApplicationStatus.SUBMITTED);
+    rentalApplicationRepo.save(rentalApplication);
+    return "Rental application saved successfully";
     }
 
     public List<RentalApplication> getAllRentalApplications() {
@@ -66,5 +80,26 @@ public class RentalApplicationService {
 
     public List<RentalApplication> getRentalApplicationsBetween(LocalDate start, LocalDate end) {
         return rentalApplicationRepo.findByMoveInDateBetweenOrderByMoveInDateAsc(start, end);
+    }
+
+    public String changeStatus(UUID id, ApplicationStatus newStatus) {
+        Optional<RentalApplication> found =rentalApplicationRepo.findById(id);
+        if (found.isEmpty()) {
+            return "The rental application with that id does not exist";
+        }
+        RentalApplication application = found.get();
+        ApplicationStatus current = application.getStatus();
+        boolean allowed = false;
+        if (current == ApplicationStatus.SUBMITTED) {
+            allowed = newStatus ==ApplicationStatus.UNDER_REVIEW || newStatus == ApplicationStatus.DECLINED;
+        } else if (current == ApplicationStatus.UNDER_REVIEW) {
+            allowed = newStatus ==ApplicationStatus.LEASED || newStatus == ApplicationStatus.DECLINED;
+        }
+        if (!allowed) {
+            return "Cannot change status from " + current +" to " + newStatus;
+        }
+        application.setStatus(newStatus);
+        rentalApplicationRepo.save(application);
+        return "Rental application status updated successfully";
     }
 }

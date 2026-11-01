@@ -8,14 +8,25 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
+import rw.ikodesha.domain.PropertyType;
 import rw.ikodesha.domain.RentalAgent;
+import rw.ikodesha.domain.Zone;
+import rw.ikodesha.repository.PropertyTypeRepository;
 import rw.ikodesha.repository.RentalAgentRepository;
+import rw.ikodesha.repository.ZoneRepository;
 
 @Service
 public class RentalAgentService {
 
     @Autowired 
     private RentalAgentRepository rentalAgentRepo;
+
+    @Autowired 
+    private PropertyTypeRepository propertyTypeRepo;
+
+    @Autowired 
+    private ZoneRepository zoneRepo;
 
     public String saveRentalAgent(RentalAgent rentalAgent) {
 
@@ -53,6 +64,45 @@ public class RentalAgentService {
     }
     public List<RentalAgent> getRentalAgentsByPropertyType(String name) {
         return rentalAgentRepo.searchByPropertyType(name);
+    }
+
+    @Transactional 
+    public String addPropertyType(UUID rentalAgentId, UUID propertyTypeId) {
+    Optional<RentalAgent> foundAgent = rentalAgentRepo.findById(rentalAgentId);
+     if (foundAgent.isEmpty()) {
+        return "The rental agent with that id does not exist";
+     } 
+     Optional<PropertyType> foundType = propertyTypeRepo.findById(propertyTypeId);
+     if (foundType.isEmpty()){
+        return "That property does not exist";
+     }  
+     RentalAgent rentalAgent = foundAgent.get();
+     PropertyType propertyType = foundType.get();
+     if (rentalAgent.getPropertyTypes().contains(propertyType)) {
+        return "The rental agent already has that property type";
+     }  
+     rentalAgent.getPropertyTypes().add(propertyType);
+     rentalAgentRepo.save(rentalAgent);
+     return "Property type added to rental agent";
+    }
+
+    public String changeZone(UUID rentalAgentId, int zoneNumber) {
+        Optional<RentalAgent> foundAgent = rentalAgentRepo.findById(rentalAgentId);
+        if (foundAgent.isEmpty()) {
+            return "The rental agent with that id doesnot exist";
+        }
+        Optional<Zone> foundZone =zoneRepo.findByZoneNumber(zoneNumber);
+        if (foundZone.isEmpty()) {
+            return "The zone with that zoneNumber does not exist";
+        }
+        Zone zone = foundZone.get();
+        if (rentalAgentRepo.existsByZoneAndIdNot(zone, rentalAgentId)) {
+            return "Thezone iz taken by another rentalagent";
+        }
+        RentalAgent rentalAgent = foundAgent.get();
+        rentalAgent.setZone(zone);
+        rentalAgentRepo.save(rentalAgent);
+        return "Zone changed successfully";
     }
     
 }

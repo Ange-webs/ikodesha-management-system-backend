@@ -24,4 +24,5 @@ List<RentalApplication> findByMoveInDateBetweenOrderByMoveInDateAsc(LocalDate st
 
 @Query ("SELECT DISTINCT a.tenant FROM RentalApplication a WHERE a.rentalAgent.id = :rentalAgentId")
 List<Tenant> findTenantsOfRentalAgent(@Param("rentalAgentId") UUID rentalAgentId);
+boolean existsByRentalAgentIdAndMoveInDateAndStatusNot(UUID rentalAgentId, LocalDate moveInDate, ApplicationStatus status);
 }
