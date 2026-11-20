@@ -36,4 +36,8 @@ int declineDay(@Param("rentalAgentId") UUID rentalAgentId,
 @Param("date") LocalDate date,
  @Param("declined") ApplicationStatus declined,
   @Param("leased") ApplicationStatus leased);
+
+  long countByMoveInDate(LocalDate moveInDate);
+
+  long countByStatus(ApplicationStatus status);
 }
