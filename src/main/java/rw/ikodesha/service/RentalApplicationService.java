@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import rw.ikodesha.domain.ApplicationStatus;
 import rw.ikodesha.domain.RentalApplication;
@@ -111,4 +112,17 @@ public class RentalApplicationService {
         rentalApplicationRepo.save(application);
         return "Rental application status updated successfully";
     }
-}
+    public List<Object[]> getStatsByStatus() {
+        return rentalApplicationRepo.countApplicationsByStatus();
+    }
+
+    @Transactional 
+    public String cancelDay(UUID rentalAgentId, LocalDate date) {
+        int count = rentalApplicationRepo.declineDay(rentalAgentId, date, ApplicationStatus.DECLINED, ApplicationStatus.LEASED);
+        return count + " rental applications cancelled";
+    }
+
+    
+    }
+
+

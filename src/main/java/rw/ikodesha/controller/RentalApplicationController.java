@@ -16,7 +16,7 @@ import rw.ikodesha.service.RentalApplicationService;
 
 @RestController 
 @RequestMapping("/api/rental-applications")
-public class RentalApplicationCntroller {
+public class RentalApplicationController {
 
     @Autowired
     private RentalApplicationService rentalApplicationService;
@@ -51,6 +51,11 @@ public class RentalApplicationCntroller {
         LocalDate endDate = LocalDate.parse(end);
         return new ResponseEntity<>(rentalApplicationService.getRentalApplicationsBetween(startDate, endDate), HttpStatus.OK);
     }
+    @GetMapping("/stats/by-status")
+    public ResponseEntity<?> getStatsByStatus() {
+        return new ResponseEntity<>(rentalApplicationService.getStatsByStatus(), HttpStatus.OK);
+
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getRentalApplicationById(@PathVariable UUID id) {
@@ -76,6 +81,13 @@ if (msg.equals("Rental application status updated successfully")) {
     }
 
 }
+
+@PatchMapping ("/cancel-day")
+public ResponseEntity<String> cancelDay(@RequestParam UUID rentalAgentId, @RequestParam String date) {
+    String msg = rentalApplicationService.cancelDay(rentalAgentId, LocalDate.parse(date));
+    return new ResponseEntity<>(msg, HttpStatus.OK);
+}
+   
 
  @PutMapping("/update/{id}")
  public ResponseEntity<String> updateRentalApplication(@PathVariable UUID id, @RequestBody RentalApplication rentalApplication) {
