@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +50,19 @@ public class RentalAgentController {
             return new ResponseEntity<>("The rental agent with that does not exist", HttpStatus.NOT_FOUND);
         }
     }
+
+    @PutMapping ("/{rentalAgentId}/Zone")
+    public ResponseEntity<String> changeZone(@PathVariable UUID rentalAgentId, @RequestParam int zoneNumber) {
+        String msg = rentalAgentService.changeZone(rentalAgentId, zoneNumber);
+        if (msg.equals("Zone changed successfully")) {
+            return new ResponseEntity<>(msg, HttpStatus.OK);
+        } else if (msg.equals("That zone is taken by another rental agent")) {
+            return new ResponseEntity<>(msg, HttpStatus.CONFLICT);        
+    } else {
+        return new ResponseEntity<>(msg, HttpStatus.NOT_FOUND);
+    }
+}
+
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateRentalAgent(@PathVariable UUID id, @RequestBody RentalAgent rentalAgent) {
         String msg = rentalAgentService.updateRentalAgent(id, rentalAgent);

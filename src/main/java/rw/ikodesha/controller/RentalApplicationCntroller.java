@@ -87,14 +87,17 @@ if (msg.equals("Rental application status updated successfully")) {
     }
  }
 
- @DeleteMapping("/delete/{id}")
- public ResponseEntity<String> deleteRentalApplication(@PathVariable UUID id) {
-     String msg = rentalApplicationService.deleteRentalApplication(id);
-     if (msg.equals("Rental application deleted successfully")) {
-        return new ResponseEntity<>(msg,HttpStatus.OK);
-     } else {
+
+  @DeleteMapping ("/delete/{id}")
+  public ResponseEntity<String> deleteRentalApplication(@PathVariable UUID id) {
+    String msg = rentalApplicationService.deleteRentalApplication(id);
+    if (msg.equals("Rental application deleted successfully")) {
+        return new ResponseEntity<>(msg, HttpStatus.OK);
+    } else if (msg.equals("That rental application has rent payments, delete them first")) {
+        return new ResponseEntity<>(msg, HttpStatus.CONFLICT);
+    } else {
         return new ResponseEntity<>(msg, HttpStatus.NOT_FOUND);
-     }
+    }
   }
 } 
     

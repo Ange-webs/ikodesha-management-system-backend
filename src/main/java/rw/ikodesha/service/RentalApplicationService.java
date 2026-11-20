@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import rw.ikodesha.domain.ApplicationStatus;
 import rw.ikodesha.domain.RentalApplication;
+import rw.ikodesha.repository.RentPaymentRepository;
 import rw.ikodesha.repository.RentalApplicationRepository;
 
 
@@ -20,6 +21,9 @@ public class RentalApplicationService {
 
     @Autowired 
     private RentalApplicationRepository rentalApplicationRepo;
+
+    @Autowired 
+    private  RentPaymentRepository rentPaymentRepo;
     
 
     public String saveRentalApplication(RentalApplication rentalApplication) {
@@ -67,12 +71,17 @@ public class RentalApplicationService {
     }
 
     public String deleteRentalApplication(UUID id) {
-        if (!rentalApplicationRepo.existsById(id)) {
-            return "The rental with that id does not exist";
+        Optional<RentalApplication> found = rentalApplicationRepo.findById(id);
+        if (found.isEmpty()) {
+            return "The rentalapplication with that id does not exist";
         }
-        rentalApplicationRepo.deleteById(id);
-        return "Rental application delete successfully";
+        if (rentPaymentRepo.existsByRentalApplication(found.get())) {
+            return "That rental application has rent payments, delete them first";
+        }
+        rentPaymentRepo.deleteById(id);
+        return "Rental application deleted successfully";
     }
+    
 
     public List<RentalApplication> getRentalApplicationsByStatus(ApplicationStatus status) {
         return rentalApplicationRepo.findByStatusOrderByMoveInDateAsc(status);
